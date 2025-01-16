@@ -102,7 +102,7 @@ This guide outlines the step-by-step process for Dockerizing a simple HTML page 
   ```
  ## **172.27.4.32:81**
 
-![image](https://github.com/user-attachments/assets/55738b27-bb4b-4415-b09e-0b66b79d3dde)
+--![image](https://github.com/user-attachments/assets/d3b721c1-ab94-4cf7-b7ee-fd4df401033a)
 
 
 ## **3. Troubleshooting Steps**
