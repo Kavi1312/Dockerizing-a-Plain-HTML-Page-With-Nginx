@@ -1,5 +1,6 @@
 #For base image creation used a specific version of nginx
-FROM nginx:1.25.2
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/
 
 # Copy the `index.html` and `nginx.conf` files into the appropriate location in the container
 COPY index.html /usr/share/nginx/html/index.html
