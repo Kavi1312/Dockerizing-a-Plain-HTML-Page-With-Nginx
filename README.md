@@ -1,106 +1,289 @@
-# Dockerizing-a-Plain-HTML-Page-With-Nginx
-# **Dockerizing a Plain HTML Page Using Nginx**
+# Dockerizing a Simple HTML Page with Nginx
 
-This guide outlines the step-by-step process for Dockerizing a simple HTML page with Nginx, pushing the image to AWS ECR, and running the container locally. Troubleshooting steps are also included to resolve common issues.
+## **Objective**
 
----
-
-## **1. Prerequisites**
-- Install Docker Desktop and ensure it’s running.
-- Set up AWS CLI with proper credentials.
-- Create an AWS ECR repository.
+The goal of this assignment is to familiarize yourself with Docker and containerization by Dockerizing a simple HTML page using Nginx as the web server.
 
 ---
 
-## **2. Steps to Dockerize the HTML Page**
+## **Requirements**
 
-### **Step 1: Create the Project Files**
+### **1. Basic HTML Page**
+- Create a plain HTML page named `index.html` with some content (e.g., "Hello, Docker!").
 
-- Create a directory and navigate into it:
-  ```bash
-  mkdir docker-nginx-html
-  cd docker-nginx-html
-  ```
-  ```
+### **2. Nginx Configuration**
+- Create an Nginx configuration file named `nginx.conf` to serve the `index.html` page.
+- Configure Nginx to listen on port 80.
 
-- Create `nginx.conf`:
-  ```nginx
-  server {
-      listen 80;
-      server_name localhost;
+### **3. Dockerfile**
+- Create a `Dockerfile` to define the Docker image.
+- Use an official Nginx base image.
+- Copy the `index.html` and `nginx.conf` files into the appropriate location in the container.
+- Ensure that the Nginx server is started when the container is run.
 
-      location / {
-          root /usr/share/nginx/html;
-          index index.html;
-      }
-  }
-  ```
+### **4. Building the Docker Image**
+- Build the Docker image using the `Dockerfile`.
 
-- Create `Dockerfile`:
-  ```dockerfile
-  FROM nginx:latest
+### **5. Push the Image to ECR**
+- Push the built image to a public repository on Amazon ECR.
 
-  COPY index.html /usr/share/nginx/html/index.html
-  COPY nginx.conf /etc/nginx/conf.d/default.conf
+### **6. Documentation**
+- Provide a `README.md` file that explains the purpose of each file (`index.html`, `nginx.conf`, `Dockerfile`) and details the steps to build and run the Docker container.
 
-  EXPOSE 80
-
-  CMD ["nginx", "-g", "daemon off;"]
-  ```
+### **7. Submission**
+- Push all artifacts, including the public repository link, the Dockerfile, and other files, into a GitHub repository.
 
 ---
 
-### **Step 2: Build the Docker Image**
+## **Implementation Steps**
 
-- Build the Docker image:
+### **Step 1: Create the HTML Page**
+
+1. Create `index.html`:
+   ```html
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Hello Docker</title>
+   </head>
+   <body>
+       <h1>Hello, Docker!</h1>
+   </body>
+   </html>
+   ```
+
+### **Step 2: Create the Nginx Configuration**
+
+1. Create `nginx.conf`:
+   ```nginx
+   server {
+       listen 80;
+       server_name localhost;
+
+       location / {
+           root /usr/share/nginx/html;
+           index index.html;
+       }
+   }
+   ```
+
+### **Step 3: Create the Dockerfile**
+
+1. Create `Dockerfile`:
+   ```dockerfile
+   FROM nginx:latest
+
+   COPY nginx.conf /etc/nginx/nginx.conf
+   COPY index.html /usr/share/nginx/html/index.html
+
+   EXPOSE 80
+
+   CMD ["nginx", "-g", "daemon off;"]
+   ```
+
+### **Step 4: Build the Docker Image**
+
+1. Build the Docker image:
+   ```bash
+   docker build -t customized-nginx .
+   ```
+
+### **Step 5: Run the Docker Container**
+
+1. Run the container and map it to port 81 on the host:
+   ```bash
+   docker run -d -p 81:80 customized-nginx
+   ```
+
+2. Access the application in the browser at:
+   ```
+   http://127.0.0.1:81
+   ```
+
+### **Step 6: Debugging Commands**
+
+If there are issues, use the following commands:
+
+- **Verify Running Containers:**
   ```bash
-  docker build -t my-nginx-image .
+  docker ps
   ```
 
-- Verify the image exists locally:
+- **Inspect Container Logs:**
   ```bash
-  docker images
+  docker logs <CONTAINER_ID>
   ```
+
+- **Access the Container:**
+  ```bash
+  docker exec -it <CONTAINER_ID> /bin/bash
+  ```
+
+- **Verify Files in the Container:**
+  ```bash
+  ls /usr/share/nginx/html
+  ```
+
+### **Step 7: Push the Image to Amazon ECR**
+
+1. Authenticate Docker to Amazon ECR:
+   ```bash
+   aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <ECR_repository_url>
+   ```
+
+2. Tag the image:
+   ```bash
+   docker tag customized-nginx:latest <ECR_repository_url>:latest
+   ```
+
+3. Push the image to the repository:
+   ```bash
+   docker push <ECR_repository_url>:latest
+   ```
+
+### **Step 8: Documentation**
+
+1. Provide a `README.md` file with:
+   - Explanation of each file (`index.html`, `nginx.conf`, `Dockerfile`).
+   - Steps to build and run the container.
+
+### **Step 9: Bonus (Optional)**
+
+#### **1. Customization**
+- **Objective:** Enhance the `index.html` with additional features and serve additional static files (e.g., `style.css`, `app.js`).
+
+1. Create `style.css`:
+   ```css
+   body {
+       font-family: Arial, sans-serif;
+       background-color: #f0f0f0;
+       padding: 20px;
+   }
+   ```
+
+2. Create `app.js`:
+   ```javascript
+   console.log("Dockerized Nginx with custom static files!");
+   ```
+
+3. Update `index.html`:
+   ```html
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Enhanced Docker Page</title>
+       <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+       <h1>Hello, Docker with Enhancements!</h1>
+       <p>This page is served using Nginx in a Docker container.</p>
+       <script src="app.js"></script>
+   </body>
+   </html>
+   ```
+
+4. Update the `Dockerfile`:
+   ```dockerfile
+   FROM nginx:latest
+
+   COPY nginx.conf /etc/nginx/nginx.conf
+   COPY index.html /usr/share/nginx/html/index.html
+   COPY style.css /usr/share/nginx/html/style.css
+   COPY app.js /usr/share/nginx/html/app.js
+
+   EXPOSE 80
+
+   CMD ["nginx", "-g", "daemon off;"]
+   ```
+
+#### **2. HTTPS Support**
+
+1. Generate a self-signed SSL certificate:
+   ```bash
+   openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
+   ```
+
+2. Update `nginx.conf` for HTTPS:
+   ```nginx
+   server {
+       listen 443 ssl;
+       server_name localhost;
+
+       ssl_certificate /etc/nginx/ssl/nginx.crt;
+       ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+       location / {
+           root /usr/share/nginx/html;
+           index index.html;
+       }
+   }
+
+   server {
+       listen 80;
+       server_name localhost;
+
+       return 301 https://$host$request_uri;
+   }
+   ```
+
+3. Update `Dockerfile`:
+   ```dockerfile
+   FROM nginx:latest
+
+   COPY nginx.conf /etc/nginx/nginx.conf
+   COPY index.html /usr/share/nginx/html/index.html
+   COPY style.css /usr/share/nginx/html/style.css
+   COPY app.js /usr/share/nginx/html/app.js
+   COPY nginx.crt /etc/nginx/ssl/nginx.crt
+   COPY nginx.key /etc/nginx/ssl/nginx.key
+
+   EXPOSE 80 443
+
+   CMD ["nginx", "-g", "daemon off;"]
+   ```
+
+#### **3. Docker Compose**
+
+1. Create `docker-compose.yml`:
+   ```yaml
+   version: "3.8"
+   services:
+     nginx:
+       image: customized-nginx
+       build:
+         context: .
+       ports:
+         - "81:80"
+         - "443:443"
+   ```
+
+2. Build and Run:
+   ```bash
+   docker-compose up --build
+   ```
+
+3. Access the application at:
+   - HTTP: `http://127.0.0.1:81`
+   - HTTPS: `https://127.0.0.1`
+
+---
+
+## **Submission**
+- Push all files to your GitHub repository.
+- Include the Amazon ECR repository link in the `README.md` file.
+
+---
+
 
 -![image](https://github.com/user-attachments/assets/73b330a2-aeeb-48c8-8929-cf045580b624)
 
-
-### **Step 3: Push the Image to AWS ECR**
-
-1. **Log in to AWS ECR**:
-   ```bash
-   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
-   ```
-
-2. **Tag the Docker Image**:
-   ```bash
-   docker tag my-nginx-image:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/my-nginx-image:latest
-   ```
-
-3. **Push the Image to ECR**:
-   ```bash
-   docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/my-nginx-image:latest
-   ```
-
-4. **Make the ECR Repository Public**:
-   - Go to the AWS Management Console and set the repository's permissions to "Public."
-
----
-
-### **Step 4: Run the Docker Container Locally**
-
-- Run the container:
-  ```bash
-  docker run -d -p 80:80 my-nginx-image
   ```
   ![image](https://github.com/user-attachments/assets/4cfb1567-5dc3-4cb0-99ac-e5aa1ee811e2)
 
-
-- Verify the page is accessible at:
-  ```
-  http://localhost
-  ```
- ## **172.27.4.32:81**
 
 --![image](https://github.com/user-attachments/assets/d3b721c1-ab94-4cf7-b7ee-fd4df401033a)
 
