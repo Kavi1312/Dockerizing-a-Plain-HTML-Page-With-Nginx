@@ -279,10 +279,10 @@ If there are issues, use the following commands:
 ---
 
 
--![image](https://github.com/user-attachments/assets/73b330a2-aeeb-48c8-8929-cf045580b624)
+--![image](https://github.com/user-attachments/assets/73b330a2-aeeb-48c8-8929-cf045580b624)
 
-  ```
-  ![image](https://github.com/user-attachments/assets/4cfb1567-5dc3-4cb0-99ac-e5aa1ee811e2)
+  
+ --![image](https://github.com/user-attachments/assets/4cfb1567-5dc3-4cb0-99ac-e5aa1ee811e2)
 
 
 --![image](https://github.com/user-attachments/assets/d3b721c1-ab94-4cf7-b7ee-fd4df401033a)
